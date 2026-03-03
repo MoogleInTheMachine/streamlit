@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt  # <--- This is the missing piece!
 
 df = pd.read_csv("movies_cleaned.csv")
 
