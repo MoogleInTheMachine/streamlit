@@ -1,28 +1,13 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 
-# Load the dataset
-df = pd.read_csv("movies.csv")
+df = pd.read_csv("movies_cleaned.csv")
 
-# Streamlit app title
 st.title("🎬 Movie Explorer App")
+genres_list = sorted(list(set([g for sublist in df['genres'].str.split('|') for g in sublist])))
 
-# Sidebar - Genre selection
-genre_list = df["genres"].unique()
-selected_genre = st.sidebar.selectbox("Select a genres:", genre_list)
+selected_genre = st.selectbox("Select a Genre:", genres_list)
 
-# Filter movies by selected genre
-filtered_movies = df[df["genres"] == selected_genre]
-
-# Display filtered movies
-st.subheader(f"Movies in Genre: {selected_genre}")
-st.dataframe(filtered_movies)
-
-# Bar chart of movie count per genre
-st.subheader("Movies per Genre")
-genre_counts = df["genres"].value_counts()
-fig, ax = plt.subplots()
-ax.bar(genre_counts.index, genre_counts.values)
-plt.xticks(rotation=45)
-st.pyplot(fig)
+filtered_df = df[df['genres'].str.contains(selected_genre, case=False, na=False)]
+st.subheader(f"Movies belonging to the '{selected_genre}' genre")
+st.dataframe(filtered_df[['Title', 'Year', 'genres']], use_container_width=True)
